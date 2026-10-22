@@ -28,3 +28,10 @@ sdist/
 var/
 *.egg-info/
 .install
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Load-test output
+perf-results/

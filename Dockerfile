@@ -6,6 +6,7 @@ WORKDIR /app
 
 # Copy requirements
 COPY requirements.txt .
+COPY api/requirements.txt ./api/
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
@@ -14,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Default command (can be overridden)
-ENTRYPOINT ["python", "radiojavan_cli_min.py"]
+ENTRYPOINT ["python", "RJ_Recommendation_System.py"]

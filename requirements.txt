@@ -1,4 +1,4 @@
-pandas
-numpy
+-r api/requirements.txt
+httpx
 pytest
 flake8

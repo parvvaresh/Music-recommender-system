@@ -9,8 +9,8 @@ from pathlib import Path
 
 def test_cli_gentleman(tmp_path):
     # Create expected directory structure
-    data_dir = tmp_path / "models" / "data"
-    model_dir = tmp_path / "models" / "fainal_model"
+    data_dir = tmp_path / "api" / "models" / "data"
+    model_dir = tmp_path / "api" / "models" / "fainal_model"
     data_dir.mkdir(parents=True)
     model_dir.mkdir(parents=True)
 
@@ -50,7 +50,7 @@ def test_cli_gentleman(tmp_path):
     local_script = tmp_path / "RJ_Recommendation_System.py"
     local_script.write_text(script_path.read_text(), encoding="utf-8")
 
-    # Run CLI inside tmp_path (so ./models/... exists)
+    # Run CLI inside tmp_path (so ./api/models/... exists)
     env = {**os.environ, "PYTHONPATH": str(Path(__file__).parent)}
     result = subprocess.run(
         [sys.executable, str(local_script), "Gentleman"],
