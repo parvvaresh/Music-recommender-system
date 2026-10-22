@@ -19,8 +19,8 @@ from typing import Tuple, Optional, List
 import pandas as pd
 
 
-CSV_PATH = "./models/data/RadioJavan_Top.csv"
-MODEL_PATH = "./models/fainal_model/model.pkl"  # same as your model path
+CSV_PATH = "./api/models/data/RadioJavan_Top.csv"
+MODEL_PATH = "./api/models/fainal_model/model.pkl"  # same as your model path
 
 
 def load_data(csv_path: str, model_path: str):

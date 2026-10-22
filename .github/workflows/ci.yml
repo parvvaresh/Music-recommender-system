@@ -34,3 +34,75 @@ jobs:
       - name: Run tests
         run: |
           pytest -v
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+  performance:
+    needs: [build-test-lint, frontend]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      - name: Install load-test dependencies
+        run: pip install httpx
+
+      - name: Build and start stack (docker compose)
+        run: docker compose up -d --build --wait
+
+      - name: Load test (RPS, p50, p95, p99)
+        # Goes through the frontend's nginx, so the whole stack is measured.
+        run: |
+          python -m perf.load_test \
+            --url http://localhost:3000 \
+            --duration 30 \
+            --concurrency 20 \
+            --warmup 5 \
+            --max-p95-ms 1000 \
+            --max-error-rate 0.01 \
+            --json-out perf-results/load-test.json
+
+      - name: Upload load-test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-report
+          path: perf-results/
+
+      - name: Show container logs
+        if: failure()
+        run: docker compose logs
+
+      - name: Stop stack
+        if: always()
+        run: docker compose down
